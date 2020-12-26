@@ -1,0 +1,40 @@
+﻿<Window x:Class="NeuralNetworkWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NeuralNetworkWpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+
+       <Border Background="Transparent" BorderBrush="Black" Height="141" Width="141" BorderThickness="1,1,1,1" Margin="10,10,615,199">
+            <Image HorizontalAlignment="Left" Height="140" Margin="0,0,0,0" x:Name="Picture" VerticalAlignment="Top" Width="140"/>
+
+        </Border>
+        <Canvas Height="140" Width="140">
+                <InkCanvas  Height="140" Width="140" Margin="0" x:Name="Canvas">
+
+                </InkCanvas>
+            </Canvas>
+            
+        <Label Content="0" HorizontalAlignment="Left" x:Name="Number" Margin="169,45,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.697,0.642"/>
+        <Button x:Name="Train" Content="Train" HorizontalAlignment="Left" Margin="10,190,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Click="Train_Click" RenderTransformOrigin="0.16,1.967"/>
+        <Button x:Name="Query" Content="Query" HorizontalAlignment="Left" Margin="709,190,0,0" VerticalAlignment="Top" Width="75" Click="Query_Click"/>
+        <Label x:Name="Result0" Content="0" HorizontalAlignment="Left" Margin="500,45,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result1" Content="0" HorizontalAlignment="Left" Margin="500,65,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result2" Content="0" HorizontalAlignment="Left" Margin="500,85,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result3" Content="0" HorizontalAlignment="Left" Margin="500,105,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result4" Content="0" HorizontalAlignment="Left" Margin="500,125,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result5" Content="0" HorizontalAlignment="Left" Margin="500,145,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result6" Content="0" HorizontalAlignment="Left" Margin="500,165,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result7" Content="0" HorizontalAlignment="Left" Margin="500,185,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result8" Content="0" HorizontalAlignment="Left" Margin="500,205,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        <Label x:Name="Result9" Content="0" HorizontalAlignment="Left" Margin="500,225,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.562,1.898"/>
+        
+        <Button x:Name="Clear" Content="Clear" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="608,190,0,0" Click="Clear_Click"/>
+        <Label x:Name="Progress" Content="Progress: 0%" HorizontalAlignment="Left" Margin="10,209,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.552,-0.717"/>
+        <Label x:Name="Error" Content="Label" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="TestQuery" Content="TestQuery" HorizontalAlignment="Left" Margin="326,44,0,0" VerticalAlignment="Top" Width="75" Click="TestQuery_Click"/>
+    </Grid>
+</Window>
