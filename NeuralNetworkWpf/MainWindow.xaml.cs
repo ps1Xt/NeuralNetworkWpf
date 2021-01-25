@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace NeuralNetworkWpf
     public partial class MainWindow : Window
     {
         NeuralNetwork Neural { get; set; }
-        string path = @"C:\Users\Ivan\Desktop\Kursach NeuralNetwork\Saves";
+        string path = @"C:\Users\ivan.scoropad\Source\Repos\ps1Xt\NeuralNetworkWpf\Kursach NeuralNetwork\2";
         Matrix m;
         public MainWindow()
         {
             InitializeComponent();
-            Neural = new NeuralNetwork(784, 18, 18, 10, 0.2);
+            Neural = new NeuralNetwork(784, 2, 2, 10, 0.2);
             Neural.Load(path);
             m = new Matrix();
             Canvas.DefaultDrawingAttributes.Height = 9;
@@ -61,7 +62,7 @@ namespace NeuralNetworkWpf
             try
             {
                 return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-               
+
             }
             finally { DeleteObject(handle); }
         }
@@ -81,7 +82,7 @@ namespace NeuralNetworkWpf
         private void Train_Click(object sender, RoutedEventArgs e)
         {
             new Task(() => TrainMethod()).Start();
-           
+
         }
 
         private void Clear_Click(object sender, RoutedEventArgs e)
@@ -114,9 +115,9 @@ namespace NeuralNetworkWpf
         private byte[] SignatureToBitmapBytes()
         {
             //get the dimensions of the ink control
-            int margin = (int)this.Canvas.Margin.Left;
-            int width = (int)this.Canvas.ActualWidth - margin;
-            int height = (int)this.Canvas.ActualHeight - margin;
+            int margin = (int)Canvas.Margin.Left;
+            int width = (int)Canvas.ActualWidth - margin;
+            int height = (int)Canvas.ActualHeight - margin;
 
             //render ink to bitmap
             RenderTargetBitmap rtb =
@@ -158,7 +159,7 @@ namespace NeuralNetworkWpf
             rtb.Render(Canvas);
 
             //save to memory stream or file 
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 encoder.Save(ms);
                 Bitmap bitmap = new Bitmap(ms);
@@ -167,16 +168,16 @@ namespace NeuralNetworkWpf
             }
 
         }
-        
+
         private void Query_Click(object sender, RoutedEventArgs e)
         {
 
-            
+
             Bitmap bmp = ConvertInkCanvasToImage();
             Picture.Source = ImageSourceFromBitmap(bmp);
             byte[] array = new byte[784];
             int q = 0;
-            for (int i = 0; i < 140; i+=5)
+            for (int i = 0; i < 140; i += 5)
             {
                 for (int j = 0; j < 140; j += 5)
                 {
@@ -191,7 +192,7 @@ namespace NeuralNetworkWpf
                     array[q++] = (byte)(255 - (sum / 25));
                 }
             }
-            double[] resultArray =  Neural.Query(Normalize(array));
+            double[] resultArray = Neural.Query(Normalize(array));
             Result0.Content = string.Format("0 - {0:0.00}", resultArray[0] * 100);
             Result1.Content = string.Format("1- {0:0.00}", resultArray[1] * 100);
             Result2.Content = string.Format("2 - {0:0.00}", resultArray[2] * 100);
@@ -212,10 +213,12 @@ namespace NeuralNetworkWpf
         {
             double[] array = new double[784];
             string number;
-            using (var sr = new StreamReader(@"C:\Users\Ivan\Desktop\Kursach NeuralNetwork\mnist_train.txt"))
+            using (var sr = new StreamReader(@"C:\Users\ivan.scoropad\Source\Repos\ps1Xt\NeuralNetworkWpf\Kursach NeuralNetwork\mnist_train.txt"))
             {
                 int plus = 0;
                 int minus = 0;
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
                 for (int j = 0; j < 100; j++)
                 {
                     double error = 0;
@@ -229,25 +232,24 @@ namespace NeuralNetworkWpf
                         numbers[Convert.ToInt32(number)] = 0.99;
                         array = Normalize(strarray);
                         Neural.Train(array, numbers);
-                        
-
-                        /*if(index == Convert.ToInt32(number))
-                        {
-                            plus++;
-                        }
-                        else
-                        {
-                            minus++;
-                        }
-                        Dispatcher.Invoke(() => Error.Content = $"{plus}/{minus}");*/
 
                     }
                     Neural.Save(path);
                     Dispatcher.Invoke(() => Progress.Content = $"Progress: {j}%");
                 }
+                stopWatch.Stop();
+                // Get the elapsed time as a TimeSpan value.
+                TimeSpan ts = stopWatch.Elapsed;
+
+                // Format and display the TimeSpan value.
+                string elapsedTime = String.Format("Time: {0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+
+                Dispatcher.Invoke(() => Time.Content = elapsedTime);
 
             }
-            
+
         }
         private double[] Normalize(byte[] arr)
         {
@@ -280,11 +282,66 @@ namespace NeuralNetworkWpf
         {
             double[] array = new double[784];
             string number;
-            using (var sr = new StreamReader(@"C:\Users\Ivan\Desktop\Kursach NeuralNetwork\mnist_train.txt"))
+            int plus = 0;
+            int minus = 0;
+            using (var sr = new StreamReader(@"C:\Users\ivan.scoropad\Source\Repos\ps1Xt\NeuralNetworkWpf\Kursach NeuralNetwork\mnist_test.txt"))
             {
                 for (int j = 0; j < 100; j++)
                 {
-                    for (int k = 0; k < 600; k++)
+                    for (int k = 0; k < 100; k++)
+                    {
+                        double[] numbers = new double[10];
+                        var strarray = sr.ReadLine().Split(',');
+                        number = strarray[0];
+
+                        array = Normalize(strarray);
+                        var resultArray = Neural.Query(array);
+                        /*Dispatcher.Invoke(() => Result0.Content = string.Format("0 - {0:0.00}", resultArray[0] * 100));
+                        Dispatcher.Invoke(() => Result1.Content = string.Format("1 - {0:0.00}", resultArray[1] * 100));
+                        Dispatcher.Invoke(() => Result2.Content = string.Format("2 - {0:0.00}", resultArray[2] * 100));
+                        Dispatcher.Invoke(() => Result3.Content = string.Format("3 - {0:0.00}", resultArray[3] * 100));
+                        Dispatcher.Invoke(() => Result4.Content = string.Format("4 - {0:0.00}", resultArray[4] * 100));
+                        Dispatcher.Invoke(() => Result5.Content = string.Format("5 - {0:0.00}", resultArray[5] * 100));
+                        Dispatcher.Invoke(() => Result6.Content = string.Format("6 - {0:0.00}", resultArray[6] * 100));
+                        Dispatcher.Invoke(() => Result7.Content = string.Format("7 - {0:0.00}", resultArray[7] * 100));
+                        Dispatcher.Invoke(() => Result8.Content = string.Format("8 - {0:0.00}", resultArray[8] * 100));
+                        Dispatcher.Invoke(() => Result9.Content = string.Format("9 - {0:0.00}", resultArray[9] * 100));
+                        byte[] imgArray = new byte[784];
+
+                        for (int h = 0; h < 784; h++)
+                        {
+                            imgArray[h] = Convert.ToByte(strarray[h + 1]);
+                        }
+                        Dispatcher.Invoke(() => Picture.Source = MakeImage(imgArray));*/
+
+                        var index = Array.IndexOf(resultArray, resultArray.Max());
+                        if (index == Convert.ToInt32(number))
+                        {
+                            plus++;
+                        }
+                        else
+                        {
+                            minus++;
+                        }
+                        Dispatcher.Invoke(() => Error.Content = $"{plus}/{minus}");
+
+                      //  Thread.Sleep(5000);
+                    }
+                }
+            }
+        }
+
+        private void ViewQuery()
+        {
+            double[] array = new double[784];
+            string number;
+            int plus = 0;
+            int minus = 0;
+            using (var sr = new StreamReader(@"C:\Users\ivan.scoropad\Source\Repos\ps1Xt\NeuralNetworkWpf\Kursach NeuralNetwork\mnist_test.txt"))
+            {
+                for (int j = 0; j < 100; j++)
+                {
+                    for (int k = 0; k < 100; k++)
                     {
                         double[] numbers = new double[10];
                         var strarray = sr.ReadLine().Split(',');
@@ -303,15 +360,33 @@ namespace NeuralNetworkWpf
                         Dispatcher.Invoke(() => Result8.Content = string.Format("8 - {0:0.00}", resultArray[8] * 100));
                         Dispatcher.Invoke(() => Result9.Content = string.Format("9 - {0:0.00}", resultArray[9] * 100));
                         byte[] imgArray = new byte[784];
+
                         for (int h = 0; h < 784; h++)
                         {
                             imgArray[h] = Convert.ToByte(strarray[h + 1]);
                         }
                         Dispatcher.Invoke(() => Picture.Source = MakeImage(imgArray));
+
+                        var index = Array.IndexOf(resultArray, resultArray.Max());
+                        if (index == Convert.ToInt32(number))
+                        {
+                            plus++;
+                        }
+                        else
+                        {
+                            minus++;
+                        }
+                        Dispatcher.Invoke(() => Error.Content = $"{plus}/{minus}");
+
                         Thread.Sleep(5000);
                     }
                 }
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            new Task(() => ViewQuery()).Start();
         }
     }
 }

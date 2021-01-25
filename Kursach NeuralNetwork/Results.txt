@@ -1,0 +1,23 @@
+18x18:
+0: good:1028 bad:8972 time:0
+1: good:8091 bad:1909 time: 01:24:36
+2: good:8212 bad:1788 time: 01:24:36
+3: good:8486 bad:1514 time: 01:24:36
+
+10x10:
+0: good: 1009 bad:8991 time: 0
+1: good: 7483 bad:2517 time: 00:50:30
+2: good: 7878 bad:2122 time: 00:50:30
+3: good: 7851 bad:2149 time: 00:50:30
+
+5x5:
+0: good: 1009 bad:8991 time: 0
+1: good: 6616 bad:3384 time: 00:25:55
+2: good: 7337 bad:2663 time: 00:25:55
+3: good: 7553 bad:2447 time: 00:25:55
+
+2x2:
+0: good: 998 bad:9002 time: 0
+1: good: 2065 bad:7935 time: 00:13:31
+2: good: 1934 bad:8066 time: 00:13:31
+3: good: 2047 bad:7953 time: 00:13:31
